@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- AUTH SCREEN -->
+    <div id="auth-screen" class="login-container">
+        <!-- Login Box -->
+        <div id="login-box" class="login-box glass-login">
+            <div class="glow-orb"></div>
+            <i class="fa-solid fa-network-wired" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem; position: relative; z-index: 2;"></i>
+            <h2 style="position: relative; z-index: 2;">AI Study Planner</h2>
+            <p style="position: relative; z-index: 2;">Neural Network Authentication</p>
+            <input type="text" id="login-username" placeholder="Username (e.g. student)" style="position: relative; z-index: 2;">
+            <input type="password" id="login-password" placeholder="Password (e.g. pass123)" style="position: relative; z-index: 2;">
+            <button onclick="login()" style="position: relative; z-index: 2;"><i class="fa-solid fa-fingerprint"></i> Connect</button>
+            
+            <div style="display: flex; align-items: center; margin: 15px 0; position: relative; z-index: 2;">
+                <hr style="flex: 1; border-color: rgba(255,255,255,0.2);">
+                <span style="color: var(--text-muted); margin: 0 10px; font-size: 0.85rem;">OR</span>
+                <hr style="flex: 1; border-color: rgba(255,255,255,0.2);">
+            </div>
+            
+            <button onclick="showGoogleModal()" style="background-color: white; color: #333; position: relative; z-index: 2;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18" style="vertical-align: middle; margin-right: 8px;"> Sign in with Google
+            </button>
+            
+            <p id="login-error" class="error-msg" style="margin-top: 10px; position: relative; z-index: 2;"></p>
+            <p style="margin-top: 15px; color: #cbd5e1; cursor: pointer; position: relative; z-index: 2;" onclick="toggleAuth('signup')">Don't have an account? <b style="color: var(--accent);">Sign up here</b></p>
+        </div>
+
+        <!-- Signup Box -->
+        <div id="signup-box" class="login-box glass-login" style="display: none;">
+            <div class="glow-orb" style="background: rgba(16, 185, 129, 0.3);"></div>
+            <i class="fa-solid fa-user-plus" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem; position: relative; z-index: 2;"></i>
+            <h2 style="position: relative; z-index: 2;">Create Account</h2>
+            <p style="position: relative; z-index: 2;">Join the AI Study Network</p>
+            <input type="text" id="signup-username" placeholder="Choose Username" style="position: relative; z-index: 2;">
+            <input type="password" id="signup-password" placeholder="Choose Password" style="position: relative; z-index: 2;">
+            <button onclick="signup()" style="background-color: #10b981; position: relative; z-index: 2;"><i class="fa-solid fa-check"></i> Create Account</button>
+            
+            <div style="display: flex; align-items: center; margin: 15px 0; position: relative; z-index: 2;">
+                <hr style="flex: 1; border-color: rgba(255,255,255,0.2);">
+                <span style="color: var(--text-muted); margin: 0 10px; font-size: 0.85rem;">OR</span>
+                <hr style="flex: 1; border-color: rgba(255,255,255,0.2);">
+            </div>
+            
+            <button onclick="showGoogleModal()" style="background-color: white; color: #333; position: relative; z-index: 2;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18" style="vertical-align: middle; margin-right: 8px;"> Sign up with Google
+            </button>
+
+            <p id="signup-error" class="error-msg" style="margin-top: 10px; position: relative; z-index: 2;"></p>
+            <p style="margin-top: 15px; color: #cbd5e1; cursor: pointer; position: relative; z-index: 2;" onclick="toggleAuth('login')">Already have an account? <b style="color: var(--accent);">Log in here</b></p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h2 style="font-size: 1.2rem;">AI Study Planner</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="nav-item active" onclick="switchView('dashboard', event)"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+                    <li class="nav-item" onclick="switchView('calendar', event)"><i class="fa-solid fa-calendar-days"></i> Calendar</li>
+                    <li class="nav-item" onclick="switchView('timer', event)"><i class="fa-solid fa-stopwatch"></i> Focus Timer</li>
+                    <li class="nav-item" onclick="switchView('progress', event)"><i class="fa-solid fa-chart-pie"></i> Analytics</li>
+                    <li class="nav-item" onclick="switchView('settings', event)"><i class="fa-solid fa-gear"></i> Settings</li>
+                    <li onclick="logout()" style="margin-top: 2rem;"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content bg-dashboard">
+            <header>
+                <div>
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="live-clock" style="color: var(--accent); font-weight: bold; font-size: 1.1rem; margin-top: 5px;">00:00:00</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <button id="theme-toggle" onclick="toggleTheme()" style="background: transparent; color: var(--text-main); font-size: 1.4rem; padding: 5px; box-shadow: none;" title="Toggle Morning/Night Mode"><i class="fa-solid fa-sun"></i></button>
+                    <div class="user-profile" style="display: flex; align-items: center; gap: 10px;">
+                        <span id="welcome-user" style="font-weight: 600; color: #cbd5e1;"></span>
+                        <img src="https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <!-- VIEW: DASHBOARD (AI PLANNER) -->
+            <section id="view-dashboard" class="view-section action-section">
+                <div class="panel glass feature-panel" style="grid-column: span 2;">
+                    <h2><i class="fa-solid fa-wand-magic-sparkles"></i> AI Planner</h2>
+                    <p>Enter your syllabus subjects/topics. The AI will find the optimal learning path and resolve schedule constraints automatically.</p>
+                    <textarea id="syllabus-input" placeholder="Example: Math, Physics, Data Structures, Algorithms" rows="3" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid var(--glass-border); margin-bottom: 10px;"></textarea>
+                    <button onclick="generatePlanner()"><i class="fa-solid fa-bolt"></i> Generate Smart Plan</button>
+                </div>
+
+                <div class="panel glass feature-panel">
+                    <h2><i class="fa-solid fa-list-check"></i> Your Schedule</h2>
+                    <ul id="schedule-list" style="list-style: none; margin-top: 10px; color: var(--text-muted);">
+                <div class="glass" style="grid-column: 1 / -1;">
+                    <h2><i class="fa-solid fa-list-check"></i> Priority Tasks</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Auto-prioritized based on deadlines and complexity.</p>
+                    <ul id="task-list-container" style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                        <li style="color: var(--text-muted);">No tasks scheduled yet. Generate a plan!</li>
+                    </ul>
+                </div>
+
+                <div class="panel glass trace-panel">
+                    <h2><i class="fa-solid fa-terminal"></i> AI Reasoning Trace</h2>
+                    <div id="terminal-output" class="terminal">
+                        <p class="system-msg">Awaiting syllabus input...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Study Calendar View -->
+            <section id="view-calendar" class="view-section" style="display: none;">
+                <div class="glass" style="margin-bottom: 1.5rem;">
+                    <h2><i class="fa-regular fa-calendar-days"></i> Dynamic Schedule</h2>
+                    <p>Your AI-generated tasks and deadlines are mapped below.</p>
+                </div>
+                
+                <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                    <!-- Tasks will render here -->
+                    <div style="color: var(--text-muted);">No tasks to display.</div>
+                </div>
+            </section>
+
+            <!-- VIEW: TIMER -->
+            <section id="view-timer" class="view-section" style="display: none;">
+                <div class="panel glass" style="text-align: center; padding: 4rem; min-height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <i class="fa-solid fa-stopwatch" style="font-size: 4rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">Focus Timer</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Stay productive with timed study sessions.</p>
+                    
+                    <div id="timer-display" style="font-size: 7rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 2rem; text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);">
+                        25:00
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button onclick="startTimer()" style="padding: 15px 40px; font-size: 1.2rem; border-radius: 50px;"><i class="fa-solid fa-play"></i> Start Focus</button>
+                        <button onclick="resetTimer()" style="padding: 15px 40px; font-size: 1.2rem; background-color: #475569; border-radius: 50px;"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: PROGRESS TRACKER (Analytics) -->
+            <section id="view-progress" class="view-section" style="display: none;">
+                <div class="panel glass feature-panel" style="margin-bottom: 1.5rem;">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Your Study Analytics</h2>
+                    <p>Track your AI-guided learning journey over time, fetched securely from the database.</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+                    <div class="stat-card glass">
+                        <i class="fa-solid fa-fire" style="color: #ef4444; font-size: 2rem;"></i>
+                        <h3 id="stat-streak">0 Days</h3>
+                        <p>Current Streak</p>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fa-solid fa-clock" style="color: var(--accent); font-size: 2rem;"></i>
+                        <h3 id="stat-focus">0 Hours</h3>
+                        <p>Total Focus Time</p>
+                    </div>
+                    <div class="stat-card glass">
+                        <i class="fa-solid fa-check-double" style="color: #10b981; font-size: 2rem;"></i>
+                        <button onclick="startTimer()"><i class="fa-solid fa-play"></i> Start Deep Work</button>
+                    <button onclick="resetTimer()" style="background-color: transparent; border: 1px solid var(--accent);"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                
+                <div class="glass" style="margin-top: 1.5rem;">
+                    <h2><i class="fa-solid fa-book"></i> Subject-Wise Mastery</h2>
+                    <div id="subject-bars-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 1rem;">
+                        <p style="color: var(--text-muted);">Complete tasks to track subject hours.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: SETTINGS -->
+            <section id="view-settings" class="view-section" style="display: none;">
+                <div class="panel glass feature-panel" style="max-width: 600px; margin: 0 auto;">
+                    <h2><i class="fa-solid fa-gear"></i> Application Settings</h2>
+                    <p>Configure your AI Engine parameters and application preferences. They will be saved to your account in the Database.</p>
+                    
+                    <div class="setting-item">
+                        <label>AI Study Difficulty Level</label>
+                        <select id="setting-difficulty" class="settings-input">
+                            <option>Beginner (Slower Pacing)</option>
+                            <option>Intermediate (Standard)</option>
+                            <option>Advanced (Fast-Tracked)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Preferred Daily Study Hours</label>
+                        <input id="setting-hours" type="number" class="settings-input" value="4" min="1" max="16">
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Break Durations (Pomodoro)</label>
+                        <select id="setting-break" class="settings-input">
+                            <option>Short (5 mins)</option>
+                            <option>Long (15 mins)</option>
+                        </select>
+                    </div>
+
+                    <p id="settings-msg" style="color: #10b981; font-weight: bold; text-align: center; margin-bottom: 10px;"></p>
+
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <button style="flex: 1;" onclick="saveSettings()"><i class="fa-solid fa-save"></i> Save Settings to Database</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- AI Chatbot Overlay -->
+    <div id="chatbot-ui" class="chatbot-container" style="display: none;">
+        <div class="chat-header" onclick="toggleChat()">
+            <div><i class="fa-solid fa-robot"></i> AI Assistant</div>
+            <i class="fa-solid fa-chevron-down" id="chat-toggle-icon"></i>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="message ai-msg">Hello! I am your AI Planner assistant. Need help?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ask a question..." onkeypress="handleChatEnter(event)">
+            <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Google OAuth Mock Modal -->
+    <div id="google-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div style="background: white; color: black; width: 400px; border-radius: 12px; padding: 2rem; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="40" style="margin-bottom: 1rem;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 500; color: #202124;">Sign in</h2>
+            <p style="margin-bottom: 2rem; color: #5f6368;">to continue to <b>AI Study Planner</b></p>
+            
+            <div style="text-align: left; margin-bottom: 1rem; border: 1px solid #dadce0; border-radius: 8px; cursor: pointer; transition: 0.2s;" onclick="googleLogin('student@gmail.com')" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                <div style="display: flex; align-items: center; padding: 12px;">
+                    <img src="https://ui-avatars.com/api/?name=Student&background=random&rounded=true" width="40" style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 500; color: #3c4043;">Student User</div>
+                        <div style="color: #5f6368; font-size: 0.85rem;">student@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 2rem; border: 1px solid #dadce0; border-radius: 8px; cursor: pointer; transition: 0.2s;" onclick="googleLogin('developer@gmail.com')" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                <div style="display: flex; align-items: center; padding: 12px;">
+                    <img src="https://ui-avatars.com/api/?name=Developer&background=random&rounded=true" width="40" style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 500; color: #3c4043;">Developer User</div>
+                        <div style="color: #5f6368; font-size: 0.85rem;">developer@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('google-modal').style.display='none'" style="background: none; color: #1a73e8; border: none; font-weight: 500; cursor: pointer; font-size: 1rem;">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
